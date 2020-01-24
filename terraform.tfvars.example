@@ -1,0 +1,17 @@
+weefee_nic_staticprivate = "0.0.0.0"
+
+hive13_ssh_key = "ssh-rsa .... "
+
+s2s_ipsec_psk = "Khxm(kUJj<lK9&thisisnotouractualpsk"
+
+vnet_address_space = ["0.0.0.0/0"]
+
+vnet_dns_servers = ["0.0.0.0"]
+
+gateway_subnet_prefix = "0.0.0.0/0"
+
+vms_subnet_prefix = "0.0.0.0/0"
+
+s2s_local_gateway_ip = "0.0.0.0"
+
+s2s_local_address_space = ["0.0.0.0/0"]
