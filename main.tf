@@ -1,6 +1,16 @@
 provider "azurerm" {
 }
 
+terraform {
+  backend "remote" {
+    organization = "hive13"
+
+    workspaces {
+      name = "azure-config"
+    }
+  }
+}
+
 resource "azurerm_resource_group" "hive13-cto-hiveinfra" {
   name     = "hive13-cto-hiveinfra"
   location = "eastus"
