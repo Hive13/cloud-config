@@ -121,30 +121,6 @@ resource "azurerm_network_security_group" "hive13az-revprox-nsg" {
     destination_address_prefix = "*"
   }
 
-  security_rule {
-    name = "AllowAllLAN"
-    priority = 102
-    direction = "Inbound"
-    access = "Allow"
-    protocol = "*"
-    source_port_range = "*"
-    destination_port_range = "*"
-    source_address_prefix = "172.16.0.0/12"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name = "DefaultDeny"
-    priority = 4096
-    direction = "Inbound"
-    access = "Deny"
-    protocol = "*"
-    source_port_range = "*"
-    destination_port_range = "*"
-    source_address_prefix = "Internet"
-    destination_address_prefix = "*"
-  }
-
   tags = {
     terraform = true
   }
