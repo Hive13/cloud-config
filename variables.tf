@@ -33,3 +33,7 @@ variable "s2s_local_gateway_ip" {
 variable "s2s_local_address_space" {
   description = "Address space behind the S2S on-premises gateway"
 }
+
+variable "revprox_nic_staticprivate" {
+  description = "Static IP of the network interface on the reverse proxy VM"
+}

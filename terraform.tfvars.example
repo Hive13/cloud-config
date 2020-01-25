@@ -15,3 +15,5 @@ vms_subnet_prefix = "0.0.0.0/0"
 s2s_local_gateway_ip = "0.0.0.0"
 
 s2s_local_address_space = ["0.0.0.0/0"]
+
+revprox_nic_staticprivate = "0.0.0.0"

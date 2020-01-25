@@ -19,6 +19,11 @@ resource "azurerm_resource_group" "hive13-cto-hiveinfra" {
   }
 }
 
+# ----------------------
+# BEGIN UNIFI CONTROLLER
+# vvvvvvvvvvvvvvvvvvvvvv
+
+# NIC
 resource "azurerm_network_interface" "hive13-vm-weefee-nic" {
   name = "hive13-weefee-nic"
   location = azurerm_resource_group.hive13-cto-hiveinfra.location
@@ -36,6 +41,7 @@ resource "azurerm_network_interface" "hive13-vm-weefee-nic" {
   }
 }
 
+# VM
 resource "azurerm_virtual_machine" "hive13-vm-weefee" {
   name = "hive13-vm-weefee"
   location = azurerm_resource_group.hive13-cto-hiveinfra.location
@@ -76,6 +82,151 @@ resource "azurerm_virtual_machine" "hive13-vm-weefee" {
     terraform = true
   }
 }
+
+# ^^^^^^^^^^^^^^^^^^^^
+# END UNIFI CONTROLLER
+# --------------------
+
+# --------------------------
+# BEGIN APACHE REVERSE PROXY
+# vvvvvvvvvvvvvvvvvvvvvvvvvv
+
+# NSG
+resource "azurerm_network_security_group" "hive13az-revprox-nsg" {
+  name = "hive13-revprox-nsg"
+  location = azurerm_resource_group.hive13-cto-hiveinfra.location
+  resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
+
+  security_rule {
+    name = "Port80In"
+    priority = 100
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "Tcp"
+    source_port_range = "*"
+    destination_port_range = "80"
+    source_address_prefix = "Internet"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name = "Port443In"
+    priority = 101
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "Tcp"
+    source_port_range = "*"
+    destination_port_range = "443"
+    source_address_prefix = "Internet"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name = "AllowAllLAN"
+    priority = 102
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "*"
+    source_port_range = "*"
+    destination_port_range = "*"
+    source_address_prefix = "172.16.0.0/12"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name = "DefaultDeny"
+    priority = 4096
+    direction = "Inbound"
+    access = "Deny"
+    protocol = "*"
+    source_port_range = "*"
+    destination_port_range = "*"
+    source_address_prefix = "Internet"
+    destination_address_prefix = "*"
+  }
+
+  tags = {
+    terraform = true
+  }
+}
+
+# PUBLIC IP
+resource "azurerm_public_ip" "hive13az-revproxip" {
+  name = "hive13az-revproxip"
+  location = azurerm_resource_group.hive13-vnet.location
+  resource_group_name = azurerm_resource_group.hive13-vnet.name
+  allocation_method = "Dynamic"
+  domain_name_label = "hive13az-revprox"
+
+}
+
+# NIC
+resource "azurerm_network_interface" "hive13-vm-revprox-nic" {
+  name = "hive13-revprox-nic"
+  location = azurerm_resource_group.hive13-cto-hiveinfra.location
+  resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
+
+  network_security_group_id = azurerm_network_security_group.hive13az-revprox-nsg.id
+
+  ip_configuration {
+    name = "RevproxNicConfig1"
+    subnet_id = azurerm_subnet.hive13az-vms.id
+    private_ip_address_allocation = "Static"
+    private_ip_address = var.revprox_nic_staticprivate
+    public_ip_address_id = azurerm_public_ip.hive13az-revproxip.id
+  }
+
+  tags = {
+    terraform = true
+  }
+}
+
+# VM
+resource "azurerm_virtual_machine" "hive13-vm-revprox" {
+  name = "hive13-vm-revprox"
+  location = azurerm_resource_group.hive13-cto-hiveinfra.location
+  resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
+
+  network_interface_ids = [azurerm_network_interface.hive13-vm-revprox-nic.id]
+  vm_size = "Standard_B1ls"
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+  storage_os_disk {
+    name = "hive13-vm-revprox-osdisk"
+    create_option = "FromImage"
+    disk_size_gb = 50
+    caching = "ReadWrite"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  os_profile {
+    computer_name = "hive13az-revprox"
+    admin_username = "hive13"
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = true
+    ssh_keys {
+      key_data = var.hive13_ssh_key
+      path = "/home/hive13/.ssh/authorized_keys"
+    }
+  }
+
+  tags = {
+    terraform = true
+  }
+}
+
+
+# ^^^^^^^^^^^^^^^^^^^^^^^^
+# END APACHE REVERSE PROXY
+# ------------------------
 
 resource "azurerm_resource_group" "hive13-vnet" {
   name     = "hive13-vnet"
