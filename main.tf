@@ -164,7 +164,7 @@ resource "azurerm_virtual_machine" "hive13-vm-revprox" {
   resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
 
   network_interface_ids = [azurerm_network_interface.hive13-vm-revprox-nic.id]
-  vm_size = "Standard_B1ls"
+  vm_size = "Standard_B1s"
 
   storage_image_reference {
     publisher = "Canonical"
