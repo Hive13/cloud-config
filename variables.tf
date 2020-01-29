@@ -37,3 +37,7 @@ variable "s2s_local_address_space" {
 variable "revprox_nic_staticprivate" {
   description = "Static IP of the network interface on the reverse proxy VM"
 }
+
+variable "psqlmaster_nic_staticprivate" {
+  description = "static IP of the network interface on the PostgreSQL master VM"
+}
