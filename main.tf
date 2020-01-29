@@ -218,7 +218,7 @@ resource "azurerm_network_interface" "hive13-vm-psqlmaster-nic" {
     name = "PsqlMasterNicConfig1"
     subnet_id = azurerm_subnet.hive13az-vms.id
     private_ip_address_allocation = "Static"
-    private_ip_address = var.pslqmaster_nic_staticprivate
+    private_ip_address = var.psqlmaster_nic_staticprivate
   }
 
   tags = {
