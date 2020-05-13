@@ -233,7 +233,7 @@ resource "azurerm_virtual_machine" "hive13-vm-psqlmaster" {
   resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
 
   network_interface_ids = [azurerm_network_interface.hive13-vm-psqlmaster-nic.id]
-  vm_size = "Standard_B1s"
+  vm_size = "Standard_B1ms"
 
   storage_image_reference {
     publisher = "Canonical"
