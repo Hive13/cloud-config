@@ -41,3 +41,7 @@ variable "revprox_nic_staticprivate" {
 variable "psqlmaster_nic_staticprivate" {
   description = "static IP of the network interface on the PostgreSQL master VM"
 }
+
+variable "intwebapp_nic_staticprivate" {
+  description = "static IP of the network interface on the Intweb application VM"
+}
