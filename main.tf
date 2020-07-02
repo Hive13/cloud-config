@@ -406,6 +406,10 @@ resource "azurerm_virtual_network_gateway" "hive13az-gw" {
   }
 }
 
+# ---------------------
+# START 2929 VPN CONFIG
+# vvvvvvvvvvvvvvvvvvvvv
+
 resource "azurerm_local_network_gateway" "hive13int" {
   name = "hive13int"
   location = azurerm_resource_group.hive13-vnet.location
@@ -433,3 +437,7 @@ resource "azurerm_virtual_network_gateway_connection" "hive13-s2s" {
     terraform = true
   }
 }
+
+# ^^^^^^^^^^^^^^^^^^^
+# END 2929 VPN CONFIG
+# -------------------
