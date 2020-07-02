@@ -441,3 +441,39 @@ resource "azurerm_virtual_network_gateway_connection" "hive13-s2s" {
 # ^^^^^^^^^^^^^^^^^^^
 # END 2929 VPN CONFIG
 # -------------------
+
+# ---------------------
+# START 2701 VPN CONFIG
+# vvvvvvvvvvvvvvvvvvvvv
+
+resource "azurerm_local_network_gateway" "hive13-2701gw" {
+  name = "hive13-2701gw"
+  location = azurerm_resource_group.hive13-vnet.location
+  resource_group_name = azurerm_resource_group.hive13-vnet.name
+  gateway_address = var.hive13-2701_local_gateway_ip
+  address_space = var.hive13-2701_local_address_space
+
+  tags = {
+    terraform = true
+  }
+}
+
+resource "azurerm_virtual_network_gateway_connection" "hive13-2701-s2s" {
+  name = "hive13-2701-s2s"
+  location = azurerm_resource_group.hive13-vnet.location
+  resource_group_name = azurerm_resource_group.hive13-vnet.name
+
+  type = "IPsec"
+  virtual_network_gateway_id = azurerm_virtual_network_gateway.hive13az-gw.id
+  local_network_gateway_id = azurerm_local_network_gateway.hive13-2701gw.id
+
+  shared_key = var.gw2701_ipsec_psk
+
+  tags = {
+    terraform = true
+  }
+}
+
+# ^^^^^^^^^^^^^^^^^^^
+# END 2701 VPN CONFIG
+# -------------------

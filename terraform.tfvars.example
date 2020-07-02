@@ -21,3 +21,9 @@ revprox_nic_staticprivate = "0.0.0.0"
 psqlmaster_nic_staticprivate = "0.0.0.0"
 
 intwebapp_nic_staticprivate = "0.0.0.0"
+
+hive13-2701_local_gateway_ip = "0.0.0.0"
+
+hive13-2701_local_address_space = ["0.0.0.0/0"]
+
+gw2701_ipsec_psk = "Khxm(kUJj<lK9&wemovedandthisisstillnotouractualpsk"

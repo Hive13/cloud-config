@@ -45,3 +45,15 @@ variable "psqlmaster_nic_staticprivate" {
 variable "intwebapp_nic_staticprivate" {
   description = "static IP of the network interface on the Intweb application VM"
 }
+
+variable "hive13-2701_local_gateway_ip" {
+  description = "Public IP of the on-prem side of the tunnel to 2701"
+}
+
+variable "hive13-2701_local_address_space" {
+  description = "Address space on the local side at 2701"
+}
+
+variable "gw2701_ipsec_psk" {
+  description = "IPsec pre-shared secret for Hive13 site-to-site-VPN at 2701"
+}
