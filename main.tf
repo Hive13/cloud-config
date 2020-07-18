@@ -422,33 +422,33 @@ resource "azurerm_virtual_network_gateway" "hive13az-gw" {
 # START 2929 VPN CONFIG
 # vvvvvvvvvvvvvvvvvvvvv
 
-resource "azurerm_local_network_gateway" "hive13int" {
-  name = "hive13int"
-  location = azurerm_resource_group.hive13-vnet.location
-  resource_group_name = azurerm_resource_group.hive13-vnet.name
-  gateway_address = var.s2s_local_gateway_ip
-  address_space = var.s2s_local_address_space
+#resource "azurerm_local_network_gateway" "hive13int" {
+#  name = "hive13int"
+#  location = azurerm_resource_group.hive13-vnet.location
+#  resource_group_name = azurerm_resource_group.hive13-vnet.name
+#  gateway_address = var.s2s_local_gateway_ip
+#  address_space = var.s2s_local_address_space
+#
+#  tags = {
+#    terraform = true
+#  }
+#}
 
-  tags = {
-    terraform = true
-  }
-}
-
-resource "azurerm_virtual_network_gateway_connection" "hive13-s2s" {
-  name = "hive13-s2s"
-  location = azurerm_resource_group.hive13-vnet.location
-  resource_group_name = azurerm_resource_group.hive13-vnet.name
-
-  type = "IPsec"
-  virtual_network_gateway_id = azurerm_virtual_network_gateway.hive13az-gw.id
-  local_network_gateway_id = azurerm_local_network_gateway.hive13int.id
-  
-  shared_key = var.s2s_ipsec_psk
-
-  tags = {
-    terraform = true
-  }
-}
+#resource "azurerm_virtual_network_gateway_connection" "hive13-s2s" {
+#  name = "hive13-s2s"
+#  location = azurerm_resource_group.hive13-vnet.location
+#  resource_group_name = azurerm_resource_group.hive13-vnet.name
+#
+#  type = "IPsec"
+#  virtual_network_gateway_id = azurerm_virtual_network_gateway.hive13az-gw.id
+#  local_network_gateway_id = azurerm_local_network_gateway.hive13int.id
+#  
+#  shared_key = var.s2s_ipsec_psk
+#
+#  tags = {
+#    terraform = true
+#  }
+#}
 
 # ^^^^^^^^^^^^^^^^^^^
 # END 2929 VPN CONFIG
