@@ -28,8 +28,15 @@ resource "azurerm_storage_account" "hive13dockervol" {
   name                     = "hive13dockervol"
   resource_group_name      = azurerm_resource_group.hive13-cto-hiveinfra.name
   location                 = azurerm_resource_group.hive13-cto-hiveinfra.location
+  account_kind             = "StorageV2"
+  allow_blob_public_access = "false"
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  network_rules = {
+    default_action = "Deny"
+    virtual_network_subnet_ids = [azurerm_subnet.hive13az-vms.id]
+  }
 
   tags = {
     terraform = true
