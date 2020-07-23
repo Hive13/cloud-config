@@ -46,6 +46,10 @@ variable "intwebapp_nic_staticprivate" {
   description = "static IP of the network interface on the Intweb application VM"
 }
 
+variable "bitwarden_nic_staticprivate" {
+  description = "static IP of the network interface on the Bitwarden server VM"
+}
+
 variable "hive13-2701_local_gateway_ip" {
   description = "Public IP of the on-prem side of the tunnel to 2701"
 }

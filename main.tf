@@ -352,6 +352,74 @@ resource "azurerm_virtual_machine" "hive13-vm-intwebapp" {
 # END INTWEB APP SERVER
 # ---------------------
 
+# --------------------------
+# BEGIN BITWARDEN APP SERVER
+# vvvvvvvvvvvvvvvvvvvvvvvvvv
+
+# NIC
+resource "azurerm_network_interface" "hive13-vm-bitwarden-nic" {
+  name = "hive13-bitwarden-nic"
+  location = azurerm_resource_group.hive13-cto-hiveinfra.location
+  resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
+
+  ip_configuration {
+    name = "BitwardenAppNicConfig1"
+    subnet_id = azurerm_subnet.hive13az-vms.id
+    private_ip_address_allocation = "Static"
+    private_ip_address = var.bitwarden_nic_staticprivate
+  }
+
+  tags = {
+    terraform = true
+  }
+}
+
+# VM
+resource "azurerm_virtual_machine" "hive13-vm-bitwarden" {
+  name = "hive13-vm-bitwarden"
+  location = azurerm_resource_group.hive13-cto-hiveinfra.location
+  resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
+
+  network_interface_ids = [azurerm_network_interface.hive13-vm-bitwarden-nic.id]
+  vm_size = "Standard_B1s"
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+  storage_os_disk {
+    name = "hive13-vm-bitwarden-osdisk"
+    create_option = "FromImage"
+    disk_size_gb = 50
+    caching = "ReadWrite"
+    managed_disk_type = "StandardSSD_LRS"
+  }
+
+  os_profile {
+    computer_name = "hive13az-bitwarden"
+    admin_username = "hive13"
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = true
+    ssh_keys {
+      key_data = var.hive13_ssh_key
+      path = "/home/hive13/.ssh/authorized_keys"
+    }
+  }
+
+  tags = {
+    terraform = true
+  }
+}
+
+# ^^^^^^^^^^^^^^^^^^^^^^^^
+# END BITWARDEN APP SERVER
+# ------------------------
+
 resource "azurerm_resource_group" "hive13-vnet" {
   name     = "hive13-vnet"
   location = "eastus"
