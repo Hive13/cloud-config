@@ -461,7 +461,7 @@ resource "azurerm_virtual_network" "hive13az" {
   address_space = var.vnet_address_space
   location = "eastus"
   resource_group_name = azurerm_resource_group.hive13-vnet.name
-  dns_servers = var.vnet_dns_servers
+  #dns_servers = var.vnet_dns_servers
   tags = {
     terraform = true
   }
