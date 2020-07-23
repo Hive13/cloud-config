@@ -19,6 +19,38 @@ resource "azurerm_resource_group" "hive13-cto-hiveinfra" {
   }
 }
 
+# ------------------------------
+# BEGIN DOCKER VOLUME FILE SHARE
+# vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+# STORAGE ACCOUNT
+resource "azurerm_storage_account" "hive13-docker-vol" {
+  name                     = "hive13-docker-vol"
+  resource_group_name      = azurerm_resource_group.hive13-cto-hiveinfra.name
+  location                 = azurerm_resource_group.hive13-cto-hiveinfra.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+  tags = {
+    terraform = true
+  }
+}
+
+# FILE SHARE
+resource "azurerm_storage_share" "docker-vol" {
+  name                 = "docker-vol"
+  storage_account_name = azurerm_storage_account.hive13-docker-vol.name
+  quota                = 50
+
+  tags = {
+    terraform = true
+  }
+}
+
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# END DOCKER VOLUME FILE SHARE
+# ----------------------------
+
 # ----------------------
 # BEGIN UNIFI CONTROLLER
 # vvvvvvvvvvvvvvvvvvvvvv
