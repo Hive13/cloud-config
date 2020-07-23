@@ -29,7 +29,6 @@ resource "azurerm_storage_account" "hive13dockervol" {
   resource_group_name      = azurerm_resource_group.hive13-cto-hiveinfra.name
   location                 = azurerm_resource_group.hive13-cto-hiveinfra.location
   account_kind             = "StorageV2"
-  allow_blob_public_access = "false"
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
