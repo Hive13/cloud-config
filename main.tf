@@ -41,10 +41,6 @@ resource "azurerm_storage_share" "docker-vol" {
   name                 = "docker-vol"
   storage_account_name = azurerm_storage_account.hive13dockervol.name
   quota                = 50
-
-  tags = {
-    terraform = true
-  }
 }
 
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
