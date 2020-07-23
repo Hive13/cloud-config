@@ -32,11 +32,6 @@ resource "azurerm_storage_account" "hive13dockervol" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  network_rules {
-    default_action = "Deny"
-    virtual_network_subnet_ids = [azurerm_subnet.hive13az-vms.id]
-  }
-
   tags = {
     terraform = true
   }
