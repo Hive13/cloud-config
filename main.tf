@@ -184,8 +184,6 @@ resource "azurerm_network_interface" "hive13-vm-revprox-nic" {
   location = azurerm_resource_group.hive13-cto-hiveinfra.location
   resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
 
-  network_security_group_id = azurerm_network_security_group.hive13az-revprox-nsg.id
-
   ip_configuration {
     name = "RevproxNicConfig1"
     subnet_id = azurerm_subnet.hive13az-vms.id
@@ -197,6 +195,12 @@ resource "azurerm_network_interface" "hive13-vm-revprox-nic" {
   tags = {
     terraform = true
   }
+}
+
+# NSG-NIC ASSOCIATION
+resource "azurerm_network_interface_security_group_association" "hive13az-revprox-nsgnic" {
+  network_interface_id      = azurerm_network_interface.hive13-vm-revprox-nic.id
+  network_security_group_id = azurerm_network_security_group.hive13az-revprox-nsg.id
 }
 
 # VM
@@ -517,8 +521,6 @@ resource "azurerm_network_interface" "hive13-vm-webhost-nic" {
   location = azurerm_resource_group.hive13-cto-hiveinfra.location
   resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
 
-  network_security_group_id = azurerm_network_security_group.hive13az-webhost-nsg.id
-
   ip_configuration {
     name = "WebhostNicConfig1"
     subnet_id = azurerm_subnet.hive13az-vms.id
@@ -530,6 +532,12 @@ resource "azurerm_network_interface" "hive13-vm-webhost-nic" {
   tags = {
     terraform = true
   }
+}
+
+# NSG-NIC ASSOCIATION
+resource "azurerm_network_interface_security_group_association" "hive13az-webhost-nsgnic" {
+  network_interface_id      = azurerm_network_interface.hive13-vm-webhost-nic.id
+  network_security_group_id = azurerm_network_security_group.hive13az-webhost-nsg.id
 }
 
 # VM
