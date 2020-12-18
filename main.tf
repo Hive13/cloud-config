@@ -607,14 +607,14 @@ resource "azurerm_virtual_network" "hive13az" {
 
 resource "azurerm_subnet" "hive13az-gw" {
   name = "GatewaySubnet"
-  address_prefix = var.gateway_subnet_prefix
+  address_prefixes = [var.gateway_subnet_prefix]
   resource_group_name = azurerm_resource_group.hive13-vnet.name
   virtual_network_name = azurerm_virtual_network.hive13az.name
 }  
 
 resource "azurerm_subnet" "hive13az-vms" {
   name                 = "hive13az-vms"
-  address_prefix       = var.vms_subnet_prefix
+  address_prefixes     = [var.vms_subnet_prefix]
   resource_group_name  = azurerm_resource_group.hive13-vnet.name
   virtual_network_name = azurerm_virtual_network.hive13az.name
 }
