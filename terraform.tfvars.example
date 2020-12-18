@@ -24,6 +24,8 @@ intwebapp_nic_staticprivate = "0.0.0.0"
 
 bitwarden_nic_staticprivate = "0.0.0.0"
 
+webhost_nic_staticprivate = "0.0.0.0"
+
 hive13-2701_local_gateway_ip = "0.0.0.0"
 
 hive13-2701_local_address_space = ["0.0.0.0/0"]

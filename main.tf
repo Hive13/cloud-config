@@ -449,6 +449,134 @@ resource "azurerm_virtual_machine" "hive13-vm-bitwarden" {
 # END BITWARDEN APP SERVER
 # ------------------------
 
+# --------------------------
+# BEGIN PUBLIC WEB SERVER
+# vvvvvvvvvvvvvvvvvvvvvvvvvv
+
+# NSG
+resource "azurerm_network_security_group" "hive13az-webhost-nsg" {
+  name = "hive13-webhost-nsg"
+  location = azurerm_resource_group.hive13-cto-hiveinfra.location
+  resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
+
+  security_rule {
+    name = "Port80In"
+    priority = 100
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "Tcp"
+    source_port_range = "*"
+    destination_port_range = "80"
+    source_address_prefix = "Internet"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name = "Port443In"
+    priority = 101
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "Tcp"
+    source_port_range = "*"
+    destination_port_range = "443"
+    source_address_prefix = "Internet"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name = "Port22In"
+    priority = 102
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "Tcp"
+    source_port_range = "*"
+    destination_port_range = "22"
+    source_address_prefix = "Internet"
+    destination_address_prefix = "*"
+  }
+
+  tags = {
+    terraform = true
+  }
+}
+
+# PUBLIC IP
+resource "azurerm_public_ip" "hive13az-webhostip" {
+  name = "hive13az-webhostip"
+  location = azurerm_resource_group.hive13-vnet.location
+  resource_group_name = azurerm_resource_group.hive13-vnet.name
+  allocation_method = "Dynamic"
+  domain_name_label = "hive13az-webhost"
+
+}
+
+# NIC
+resource "azurerm_network_interface" "hive13-vm-webhost-nic" {
+  name = "hive13-webhost-nic"
+  location = azurerm_resource_group.hive13-cto-hiveinfra.location
+  resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
+
+  network_security_group_id = azurerm_network_security_group.hive13az-webhost-nsg.id
+
+  ip_configuration {
+    name = "WebhostNicConfig1"
+    subnet_id = azurerm_subnet.hive13az-vms.id
+    private_ip_address_allocation = "Static"
+    private_ip_address = var.webhost_nic_staticprivate
+    public_ip_address_id = azurerm_public_ip.hive13az-webhostip.id
+  }
+
+  tags = {
+    terraform = true
+  }
+}
+
+# VM
+resource "azurerm_virtual_machine" "hive13-vm-webhost" {
+  name = "hive13-vm-webhost"
+  location = azurerm_resource_group.hive13-cto-hiveinfra.location
+  resource_group_name = azurerm_resource_group.hive13-cto-hiveinfra.name
+
+  network_interface_ids = [azurerm_network_interface.hive13-vm-webhost-nic.id]
+  vm_size = "Standard_B1ms"
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+  storage_os_disk {
+    name = "hive13-vm-webhost-osdisk"
+    create_option = "FromImage"
+    disk_size_gb = 128
+    caching = "ReadWrite"
+    managed_disk_type = "StandardSSD_LRS"
+  }
+
+  os_profile {
+    computer_name = "hive13az-webhost"
+    admin_username = "hive13"
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = true
+    ssh_keys {
+      key_data = var.hive13_ssh_key
+      path = "/home/hive13/.ssh/authorized_keys"
+    }
+  }
+
+  tags = {
+    terraform = true
+  }
+}
+
+# ^^^^^^^^^^^^^^^^^^^^^^^^
+# END PUBLIC WEB SERVER
+# ------------------------
+
 resource "azurerm_resource_group" "hive13-vnet" {
   name     = "hive13-vnet"
   location = "eastus"
